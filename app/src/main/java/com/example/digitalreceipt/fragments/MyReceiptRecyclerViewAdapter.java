@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.digitalreceipt.R;
 import com.example.digitalreceipt.fragments.ReceiptFragment.OnListFragmentInteractionListener;
 import com.example.digitalreceipt.fragments.dummy.DummyContent.DummyItem;
 
