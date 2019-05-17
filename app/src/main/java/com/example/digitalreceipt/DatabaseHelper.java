@@ -14,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -21,9 +23,10 @@ import static android.content.ContentValues.TAG;
 
 public class DatabaseHelper {
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
     private ArrayList<String> usernameList;
     private ArrayList<String> passwordList;
-
+    private ArrayList<byte[]> receiptList;
 
 
     public DatabaseHelper() {
@@ -31,12 +34,15 @@ public class DatabaseHelper {
         db = FirebaseFirestore.getInstance();
         usernameList = new ArrayList<>();
         passwordList = new ArrayList<>();
+        receiptList = new ArrayList<>();
         getAllUsers();
+        storage = FirebaseStorage.getInstance();
     }
 
     public boolean login(String username, String password){
         for(int i = 0; i<usernameList.size(); i++){
             if(usernameList.get(i).equals(username) && passwordList.get(i).equals(password)){
+                queryReceipts(username);
                 return true;
             }
         }
@@ -89,9 +95,49 @@ public class DatabaseHelper {
 
     }
 
-    public ArrayList<Blob> getReceipts(){
+    public void queryReceipts(String userid){
+        
+            StorageReference storageRef = storage.getReference();
+            StorageReference islandRef = storageRef.child(userid + "/test.txt");
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+            islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    System.out.println("Byte stream: " + bytes);
+                    if(bytes!=null){
+                        receiptList.add(bytes);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.w(TAG, "Error retrieving receipts", exception);
+
+                }
+            });
 
 
-        return null;
+    }
+
+    public ArrayList<byte[]> getReceipts(){
+        return receiptList;
+    }
+
+    public void deleteUser(String userid){
+        db.collection("users").document(userid)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
     }
 }

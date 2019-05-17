@@ -9,6 +9,10 @@ import android.widget.TextView;
 
 import com.example.digitalreceipt.R;
 
+//DB Test import
+import java.util.ArrayList;
+//End of DB Test import
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
@@ -24,6 +28,15 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_dashboard:
                     mTextMessage.setText(R.string.title_dashboard);
+
+                    //DB Testing
+                    ArrayList<byte[]> receiptList = LoginActivity.databaseHelper.getReceipts();
+                    System.out.println("Receipt arraylist: " + receiptList);
+                    for (int i = 0; i < receiptList.size(); i++){
+                        System.out.println("Array " + i + ": " + new String(receiptList.get(i)));
+                    }
+                    //End of DB Testing
+
                     return true;
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.title_notifications);
