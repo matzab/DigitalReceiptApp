@@ -49,13 +49,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "test123:test", "test@test.com:test"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -319,7 +312,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
 
             boolean success = databaseHelper.login(mEmail,mPassword);
-            System.out.println("login result in background task" + success);
 
             return success;
         }
@@ -328,8 +320,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
-            System.out.println("login result in background task 2" + success);
 
             if (success) {
                 Intent login = new Intent(LoginActivity.this, MainActivity.class);
