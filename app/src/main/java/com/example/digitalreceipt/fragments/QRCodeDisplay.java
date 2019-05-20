@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.digitalreceipt.R;
+import com.example.digitalreceipt.activities.MainActivity;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -40,9 +41,10 @@ public class QRCodeDisplay extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageView qrCode = (ImageView) getActivity().findViewById(R.id.qr_code_view);
+        String userName  = ((MainActivity)getActivity()).getUserName();
         QRCodeWriter writer = new QRCodeWriter();
         try {
-            BitMatrix bitMatrix = writer.encode("bully", BarcodeFormat.QR_CODE, 512, 512);
+            BitMatrix bitMatrix = writer.encode(userName, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);

@@ -310,10 +310,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            boolean success = databaseHelper.login(mEmail,mPassword);
-
-            return success;
+            return databaseHelper.login(mEmail,mPassword);
         }
 
         @Override
@@ -323,6 +320,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 Intent login = new Intent(LoginActivity.this, MainActivity.class);
+                login.putExtra("user_id", mEmail);
                 startActivity(login);
                 finish();
             } else {
