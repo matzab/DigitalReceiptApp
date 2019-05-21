@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.example.digitalreceipt.R;
 import com.example.digitalreceipt.fragments.ReceiptFragment.OnListFragmentInteractionListener;
-import com.example.digitalreceipt.fragments.dummy.DummyContent.DummyItem;
+import com.example.digitalreceipt.model.ReceiptPDF;
 
 import java.util.List;
 
@@ -19,11 +19,11 @@ import java.util.List;
  */
 public class MyReceiptRecyclerViewAdapter extends RecyclerView.Adapter<MyReceiptRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<ReceiptPDF> myReceipts;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyReceiptRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyReceiptRecyclerViewAdapter(List<ReceiptPDF> myReceipts, OnListFragmentInteractionListener listener) {
+        this.myReceipts = myReceipts;
         mListener = listener;
     }
 
@@ -36,9 +36,9 @@ public class MyReceiptRecyclerViewAdapter extends RecyclerView.Adapter<MyReceipt
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mItem = myReceipts.get(position);
+        holder.mIdView.setText(myReceipts.get(position).getTitle());
+        holder.mContentView.setText("pdf description");
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,14 +54,14 @@ public class MyReceiptRecyclerViewAdapter extends RecyclerView.Adapter<MyReceipt
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return myReceipts.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public ReceiptPDF mItem;
 
         public ViewHolder(View view) {
             super(view);

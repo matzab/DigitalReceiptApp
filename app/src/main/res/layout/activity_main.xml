@@ -11,14 +11,10 @@
     <LinearLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="521dp"
+        android:layout_height="437dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/qr_code_view"
-            android:layout_width="match_parent"
-            android:layout_height="472dp"
-            tools:srcCompat="@tools:sample/avatars" />
+
     </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView

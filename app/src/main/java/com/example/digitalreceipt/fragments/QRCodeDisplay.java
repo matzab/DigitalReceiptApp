@@ -44,7 +44,7 @@ public class QRCodeDisplay extends Fragment {
         String userName  = ((MainActivity)getActivity()).getUserName();
         QRCodeWriter writer = new QRCodeWriter();
         try {
-            BitMatrix bitMatrix = writer.encode(userName, BarcodeFormat.QR_CODE, 512, 512);
+            BitMatrix bitMatrix = writer.encode("bobby", BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);

@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.digitalreceipt.R;
-import com.example.digitalreceipt.fragments.dummy.DummyContent;
-import com.example.digitalreceipt.fragments.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.example.digitalreceipt.activities.MainActivity;
+import com.example.digitalreceipt.model.ReceiptPDF;
 
 /**
  * A fragment representing a list of Items.
@@ -56,7 +54,11 @@ public class ReceiptFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyReceiptRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            for(ReceiptPDF p :((MainActivity)getActivity()).getReceipts() ){
+                System.out.println(p.getTitle());
+            }
+            recyclerView.setAdapter(new MyReceiptRecyclerViewAdapter(((MainActivity)getActivity()).getReceipts(), mListener));
         }
         return view;
     }
@@ -91,6 +93,6 @@ public class ReceiptFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(ReceiptPDF receiptPDF);
     }
 }
