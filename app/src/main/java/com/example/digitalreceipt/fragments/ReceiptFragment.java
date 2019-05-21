@@ -22,7 +22,6 @@ import com.example.digitalreceipt.model.ReceiptPDF;
  */
 public class ReceiptFragment extends Fragment {
 
-    // TODO: Customize parameters
     private int mColumnCount = 2;
 
     private OnListFragmentInteractionListener mListener;
