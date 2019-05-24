@@ -54,11 +54,13 @@ public class ReceiptFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
+            System.out.println(((MainActivity)getActivity()).getReceipts());
             for(ReceiptPDF p :((MainActivity)getActivity()).getReceipts() ){
                 System.out.println(p.getTitle());
             }
             recyclerView.setAdapter(new MyReceiptRecyclerViewAdapter(((MainActivity)getActivity()).getReceipts(), mListener));
         }
+
         return view;
     }
 

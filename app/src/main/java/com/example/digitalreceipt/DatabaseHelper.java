@@ -1,12 +1,18 @@
 package com.example.digitalreceipt;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.digitalreceipt.activities.LoginActivity;
+import com.example.digitalreceipt.activities.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,6 +29,7 @@ import static android.content.ContentValues.TAG;
 public class DatabaseHelper {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
+    private FirebaseAuth auth;
     private ArrayList<String> usernameList;
     private ArrayList<String> passwordList;
     private ArrayList<byte[]> receiptList;
@@ -35,48 +42,16 @@ public class DatabaseHelper {
         passwordList = new ArrayList<>();
         receiptList = new ArrayList<>();
         receiptUrlList = new ArrayList<>();
-        getAllUsers();
         storage = FirebaseStorage.getInstance();
+        auth = FirebaseAuth.getInstance();
     }
 
-    public boolean login(String username, String password){
-        for(int i = 0; i<usernameList.size(); i++){
-            if(usernameList.get(i).equals(username) && passwordList.get(i).equals(password)){
-                queryReceipts(username);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void getAllUsers(){
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                usernameList.add(document.getId());
-                                passwordList.add(document.get("password").toString());
-
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-
-    }
-
-    public void updateUser(String userid, String firstname, String lastname, String password, String dateofbirth){
+    public void updateUser(String userid, String firstname, String lastname, String dateofbirth){
         DocumentReference ref = db.collection("users").document(userid);
 
         ref.update("firstname",firstname,
                 "lastname",lastname,
-                "password",password,"dateofbirth",dateofbirth
+                "dateofbirth",dateofbirth
         ).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -95,9 +70,9 @@ public class DatabaseHelper {
 
     }
 
-    private void queryReceipts(String userid){
+    public void queryReceipts(){
 
-        db.collection("users").document(userid).collection("receipts")
+        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("receipts")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -157,15 +132,14 @@ public class DatabaseHelper {
                 });
     }
 
-    public void addUser(String userid, String firstname, String lastname, String password, String dateofbirth){
-        Map<String, Object> city = new HashMap<>();
-        city.put("firstname", firstname);
-        city.put("lastname", lastname);
-        city.put("password", password);
-        city.put("dateofbirth",dateofbirth);
+    public void addUser(String email, String firstname, String lastname,  String dateofbirth){
+        Map<String, Object> user = new HashMap<>();
+        user.put("firstname", firstname);
+        user.put("lastname", lastname);
+        user.put("dateofbirth",dateofbirth);
 
-        db.collection("users").document(userid)
-                .set(city)
+        db.collection("users").document(email)
+                .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -179,5 +153,13 @@ public class DatabaseHelper {
                         Log.w(TAG, "Error creating user", e);
                     }
                 });
+    }
+
+    public FirebaseUser getUser(){
+        return auth.getCurrentUser();
+    }
+
+    public FirebaseAuth getAuth(){
+        return auth;
     }
 }
