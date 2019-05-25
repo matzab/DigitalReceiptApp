@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.digitalreceipt.R;
 import com.example.digitalreceipt.fragments.QRCodeDisplay;
@@ -55,11 +56,12 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
                     getSupportActionBar().setTitle("Home");
                     fragment = new ReceiptFragment();
                     changeFragment(fragment);
-                    System.out.println("receipt fragment");
+                    System.out.println("Receipt fragment");
 
                     return true;
                 case R.id.navigation_dashboard:
                     getSupportActionBar().setTitle("Code display");
+                    System.out.println("QR fragment ");
                     fragment = new QRCodeDisplay();
                     changeFragment(fragment);
                     return true;
@@ -76,43 +78,38 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        receipts = new ArrayList<>();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         final FirebaseStorage storage = FirebaseStorage.getInstance();
-        db.collection("user").document(auth.getCurrentUser().getEmail()).collection("receipts")
+        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("receipts")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
                                         @Nullable FirebaseFirestoreException e) {
-                        System.out.println("EVENT HAPPENED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        System.out.println("Event happened!");
+                        receipts = new ArrayList<>();
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e);
                             return;
                         }
 
-                        System.out.println("event 2");
-                        ArrayList<String> receiptUrlList = new ArrayList<>();
+                        final ArrayList<String> receiptUrlList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : value) {
-                            System.out.println("querying");
                             receiptUrlList.add(document.get("url").toString());
                             Log.d(ContentValues.TAG, document.getId() + " => " + document.getData());
                         }
 
-                        for(int i = 0; i < receiptUrlList.size(); i++){
-                            System.out.println("getting things");
-                            StorageReference gsReference = storage.getReferenceFromUrl(receiptUrlList.get(i));
+                        for (int i = 0; i < receiptUrlList.size(); i++) {
+                            final StorageReference gsReference = storage.getReferenceFromUrl(receiptUrlList.get(i));
 
                             final long ONE_MEGABYTE = 1024 * 1024;
                             gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                 @Override
                                 public void onSuccess(byte[] bytes) {
-                                    System.out.println("Byte stream: " + bytes);
-                                    System.out.println("Tfdsf: " + (bytes!=null));
-                                    if(bytes!=null){
-                                        receipts.add(new ReceiptPDF(new byte[20],"newreceipt"));
-                                        System.out.println("Added receipt.");
+                                    if (bytes != null) {
+                                        receipts.add(new ReceiptPDF(bytes, gsReference.getName()));
                                     }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -123,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
                                 }
                             });
                         }
+
+                        Toast.makeText(MainActivity.this, "Receipt received!", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 

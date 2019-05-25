@@ -75,7 +75,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         databaseHelper = new DatabaseHelper();
 
         if(databaseHelper.getUser()!=null){
-            //databaseHelper.queryReceipts();
             Intent login = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(login);
             finish();
@@ -215,7 +214,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
-                                databaseHelper.queryReceipts();
                                 Intent login = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(login);
                                 finish();

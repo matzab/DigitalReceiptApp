@@ -38,7 +38,7 @@ public class MyReceiptRecyclerViewAdapter extends RecyclerView.Adapter<MyReceipt
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = myReceipts.get(position);
         holder.mIdView.setText(myReceipts.get(position).getTitle());
-        holder.mContentView.setText("pdf description");
+        holder.mContentView.setText("Received on: " + myReceipts.get(position).getTitle().substring(0,10));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
