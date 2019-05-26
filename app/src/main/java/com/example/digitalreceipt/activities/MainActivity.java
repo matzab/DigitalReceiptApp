@@ -1,6 +1,7 @@
 package com.example.digitalreceipt.activities;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,8 +10,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -56,18 +59,11 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
                     getSupportActionBar().setTitle("Home");
                     fragment = new ReceiptFragment();
                     changeFragment(fragment);
-                    System.out.println("Receipt fragment");
 
                     return true;
                 case R.id.navigation_dashboard:
-                    getSupportActionBar().setTitle("Code display");
-                    System.out.println("QR fragment ");
+                    getSupportActionBar().setTitle("My QR Code");
                     fragment = new QRCodeDisplay();
-                    changeFragment(fragment);
-                    return true;
-                case R.id.navigation_notifications:
-                    getSupportActionBar().setTitle("Notifications");
-                    System.out.println("Notification fragment ");
                     changeFragment(fragment);
                     return true;
             }
@@ -137,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
         transaction = fragmentManager.beginTransaction();
         fragment = new QRCodeDisplay();
         transaction.add(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
+       // transaction.addToBackStack(null);
 
         transaction.commit();
 
@@ -148,14 +144,11 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
     }
 
     private void changeFragment(Fragment fragment) {
-        // Create new fragment and transaction
         transaction = getSupportFragmentManager().beginTransaction();
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
 
-// Commit the transaction
+        transaction.replace(R.id.fragment_container, fragment);
+       // transaction.addToBackStack(null);
+
         transaction.commit();
     }
 
@@ -165,6 +158,51 @@ public class MainActivity extends AppCompatActivity implements ReceiptFragment.O
         login.putExtra("pdf", item);
         startActivity(login);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.log_out:
+                displayAlertDialog();
+                break;
+            case R.id.update_inf:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void displayAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Log out");
+        builder.setMessage("Do you wish to log out");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                            Intent login = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(login);
+                            finish();
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public String getUserName() {

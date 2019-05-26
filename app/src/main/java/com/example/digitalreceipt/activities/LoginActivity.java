@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.digitalreceipt.DatabaseHelper;
@@ -109,6 +110,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        Button registerButton  = (Button) findViewById(R.id.register_button);
+        LinearLayout root = (LinearLayout) findViewById(R.id.root);
+
+        boolean succ  = (boolean) getIntent().getBooleanExtra("successful", false);
+
+        if(succ){
+            Snackbar snackbar = Snackbar
+                    .make(root, "User successfully registered", Snackbar.LENGTH_LONG);
+            snackbar.show();
+
+        }
+
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =  new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void populateAutoComplete() {
