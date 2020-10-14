@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Android Project-DigitalReceiptApp.iml" filepath="$PROJECT_DIR$/.idea/modules/Android Project-DigitalReceiptApp.iml" group="DigitalReceiptApp" />
       <module fileurl="file://$PROJECT_DIR$/DigitalReceiptApp.iml" filepath="$PROJECT_DIR$/DigitalReceiptApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DigitalReceiptApp-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DigitalReceiptApp-app.iml" group="DigitalReceiptApp/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
